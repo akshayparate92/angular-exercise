@@ -1,0 +1,35 @@
+
+<input type="text" class="form-control" placeholder="SEARCH EVENTS" [(ngModel)]="query" id="listSearch">  
+ 
+<div class="container" style= "margin: 20px;" *ngIf= "arrEvents">
+    <ng-container  *ngIf="( arrEvents |  EventFilter : query) as result">
+
+        <div *ngFor="let arrEvents of result; let i = index"> </div>
+      
+        <p *ngIf="result.length === 0" style="text-align:center; margin-top:100px; ">No Result Found!</p>  
+      
+      </ng-container>
+  <div class="row">
+      
+    
+<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12" style="margin-bottom: 50px;"  *ngFor="let event of arrEvents | EventFilter : query ">
+    
+  <h3 class="card-header" >{{event.Name}}</h3>
+  <img style="height: 200px; width: 100%; display: block;" [src]="event.Image" alt="Card image">
+  <div class="card-footer text-muted">
+    <p class="mb-0"><i class="fa fa-calendar" aria-hidden="true"></i> {{event.Date}}</p>
+    <p>{{event.Seats}} seats available</p>
+  </div>
+<div class="card">
+  <div class="card-body text-center">
+    <a href="" class="btn" [ngClass]="{'btn-danger' : event.Seats==0,
+                                        'btn-success' : event.Seats!=0
+  }" 
+   style="cursor:pointer;"
+ (click)="btnClick(event.ID)" [routerLink]="['/event-booking', event.ID]" 
+  >{{ event.Seats!=0 ? 'Book Now':'Sold Out' }}</a>
+  </div>
+</div>
+</div>
+</div>
+</div>

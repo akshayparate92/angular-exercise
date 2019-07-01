@@ -1,0 +1,164 @@
+<div>
+<p *ngIf="event" 
+[ngClass]="{'btn-danger' : event.Seats==0,
+                                        'btn-success' : event.Seats!=0
+  }" 
+style =" text-align: center; font-size:50px"> {{event.Seats}} Available Seats
+ </p>
+ <div class="row"  *ngIf="submitted">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <p class="alert alert-success text-center">
+          <strong>Tickets Booked!</strong> 
+
+      </p>
+    </div>
+  </div>
+</div>
+
+<div  class="container">
+    <div class="row">
+        <div class = "col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <form #frm="ngForm" (ngSubmit) = "addBooking(frm)" novalidate>
+                <div class="form-group"> 
+                    <label class="control-label" for="name">Name</label>   
+                    <input type="text" placeholder="Enter User Name"
+                        class="form-control" [ngClass] = "{'is-invalid': frm.submitted && userName.invalid}"
+                        name="username" #userName = "ngModel" 
+                        [(ngModel)] = "model.username" [pattern]="'[a-zA-Z ]*'"
+                        required>
+                    <div *ngIf = "frm.submitted && userName.invalid" class = "invalid-feedback">  
+                     <div *ngIf = "userName.errors.required">
+                         Please enter your name</div>   
+                    <div  *ngIf="userName.errors.pattern">
+                                “Only letters and spaces are allowed”</div>
+                    </div>            
+                </div>  
+               
+                 <div class="form-group"> 
+                  <label class="control-label" for="name">Email</label>   
+                  <input type="text" placeholder="Enter Email"
+                      class="form-control" [ngClass] = "{'is-invalid': frm.submitted && emailName.invalid}"
+                      name="email" #emailName = "ngModel" 
+                      [(ngModel)] = "model.email" [pattern]="'[a-zA-Z0-9.-]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{3,}'"
+                      required>
+                  <div *ngIf = "frm.submitted && emailName.invalid" class = "invalid-feedback">  
+                   <div *ngIf = "emailName.errors.required">
+                       Please enter your email</div>   
+                  <div  *ngIf="emailName.errors.pattern">
+                                Invalid email</div>
+                  </div>            
+              </div> 
+              <div class="form-group"> 
+                <label class="control-label" for="name">Phone Number</label>   
+                <input type="text" placeholder="Enter Phone Number"
+                    class="form-control" [ngClass] = "{'is-invalid': frm.submitted && phoneNumber.invalid}"
+                    name="phonenumber" #phoneNumber = "ngModel" 
+                    [(ngModel)] = "model.phonenumber" [pattern]="'[6-9]\\d{9}'"
+                    required>
+                <div *ngIf = "frm.submitted && phoneNumber.invalid" class = "invalid-feedback">  
+                 <div *ngIf = "phoneNumber.errors.required">
+                     Please enter your email</div>   
+                <div  *ngIf="phoneNumber.errors.pattern">
+                  Please enter 10 digit phone number</div>
+                </div>            
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="name">No. of Seats</label>
+              <select name = "seats" [(ngModel)] = "model.seats"
+              required #Seats="ngModel" class="custom-select" (change) = "nrChanged($event)"
+              [ngClass] = "{'is-invalid': frm.submitted && Seats.invalid}">
+                <option  [ngValue]="null">Number of seats</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+                <option value="4">Four</option>
+                <option value="5">Five</option>
+                <option value="6">Six</option>
+              </select>
+              <div *ngIf = "frm.submitted && Seats.invalid" class = "invalid-feedback">  
+                  <div *ngIf = "Seats.errors.required ">
+                      Please Select Seats</div>  
+                      
+              <div *ngIf = "(frm.value.seats > 2)">
+                    Number of seats selected is
+                    more than available seats</div> 
+                 </div>             
+             </div>
+             <div class="form-group"> 
+                <label class="control-label" for="name">Attendees</label>   
+                <!-- <input type="text" placeholder="Enter User Name"
+                    class="form-control" [ngClass] = "{'is-invalid': frm.submitted && userName.invalid}"
+                    name="username" #userName = "ngModel" 
+                    [(ngModel)] = "model.username" [pattern]="'[a-zA-Z ]*'"
+                    required> -->
+                
+                <input type="text" *ngFor="let d of inputArr; let i = index;"
+                class="form-control" 
+                placeholder="Attendee {{i}}" 
+                [(ngModel)]="model.attendees[i]"
+                name="attendeeName{{i}}"
+                #att = "ngModel"
+                [ngClass] = "{'is-invalid': frm.submitted && att.invalid}"
+                required
+               />  <br>
+               <div *ngFor = "let j = index">      
+              <div class="alert alert-danger">
+                  <div *ngIf="att.errors.required">Name is required.</div>      
+            </div>  
+            </div>
+
+             </div>
+                <div class="row"> 
+                    <div class = "col-lg-3 col-md-3" >
+                        <button type="submit" name = "submit" [disabled] = "disabledValue && frm.valid"
+                         class="btn btn-success"  
+                          >Submit</button>
+                    </div> 
+                    <div class = "col-lg-3 col-md-3">
+                            <button type="submit" name = "cancel" (click)="router.navigate(['/event-list']);"
+                            class="btn btn-danger" [disabled] = "disabledValue && frm.valid"
+                             >Cancel</button>
+                    </div> 
+                </div>      
+            </form>
+        </div>
+        <div class = "col-lg-6 col-md-6 col-sm-12 col-xs-12" *ngIf="submitted" class="jumbotron">
+            <table class="table table-striped table-hover ">
+                
+                  <tr>
+                    <th>1</th>
+                    <th>User Name</th>
+                    <td>{{frm.value.username}}</td>                   
+                  </tr>
+                
+                
+                  <tr>
+                    <th>2</th>
+                    <th>Email Address</th>
+                  <td>{{frm.value.email}}</td>
+                  </tr>
+                  <tr>
+                    <th>3</th>
+                    <th>Phone Number</th>
+                    <td>{{frm.value.phonenumber}} </td>
+                  </tr>
+                  <tr >
+                    <th>4</th>
+                    <th>Seats Selected</th>
+                    <td>{{frm.value.seats}}</td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <th>Attendees</th>
+                    <td>{{frm.value.attendeeName0}}  {{frm.value.attendeeName1}}  {{frm.value.attendeeName2}}
+                        {{frm.value.attendeeName3}} {{frm.value.attendeeName4}} {{frm.value.attendeeName5}}
+                    </td>
+                  </tr>
+                  
+              </table> 
+
+
+
+        </div>
+    </div>
+</div>        
